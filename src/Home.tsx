@@ -168,31 +168,28 @@ const Home = (props: HomeProps) => {
   return (
     <main>
       {wallet && (
-        <p>Wallet {shortenAddress(wallet.publicKey.toBase58() || "")}</p>
+        <p>Wallet: {shortenAddress(wallet.publicKey.toBase58() || "")}</p>
       )}
 
       {wallet && <p>Balance: {(balance || 0).toLocaleString()} SOL</p>}
 
-      {wallet && <p>Total Available: {itemsAvailable}</p>}
-
-      {wallet && <p>Redeemed: {itemsRedeemed}</p>}
-
-      {wallet && <p>Remaining: {itemsRemaining}</p>}
+      {wallet && <p>Redeemed / Total: {itemsRedeemed} / {itemsAvailable}</p>}
 
       <MintContainer>
         {!wallet ? (
-          <ConnectButton>Connect Wallet</ConnectButton>
+          <ConnectButton id='wallet' className="py-1 px-2 text-black text-xs text-center font-bold !bg-gradient-to-br from-yellow-600 via-yellow-400 to-yellow-600 border-2 border-yellow-400 rounded flex justify-center items-center transition-all ease-in-out duration-500 transform lg:hover:-translate-y-1" style={{color: 'black', fontWeight: 'bold', border: 'rgba(251, 191, 36, 200) 2px solid'}}>Connect Wallet</ConnectButton>
         ) : (
-          <MintButton
+          <button
             disabled={isSoldOut || isMinting || !isActive}
+            className="w-full py-2 px-4 text-center text-black uppercase font-bold !bg-gradient-to-bl from-yellow-600 via-yellow-300 to-yellow-600 border-2 border-yellow-400"
+            style={{fontWeight: 'bold'}}
             onClick={onMint}
-            variant="contained"
           >
             {isSoldOut ? (
               "SOLD OUT"
             ) : isActive ? (
               isMinting ? (
-                <CircularProgress />
+                <CircularProgress style={{width: '15px', height: '15px'}} />
               ) : (
                 "MINT"
               )
@@ -204,7 +201,7 @@ const Home = (props: HomeProps) => {
                 renderer={renderCounter}
               />
             )}
-          </MintButton>
+          </button>
         )}
       </MintContainer>
 
