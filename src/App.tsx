@@ -69,6 +69,7 @@ const theme = createTheme({
 });
 
 const App = () => {
+	
   const endpoint = useMemo(() => clusterApiUrl(network), []);
 
   const wallets = useMemo(
