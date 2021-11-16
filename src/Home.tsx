@@ -12,7 +12,6 @@ const Home = () => {
   const [balance] = useWalletBalance();
   const [isActive, setIsActive] = useState(false);
   const [quantity, setQuantity] = useState(1);
-
   const wallet = useWallet();
 
   const { isLoading, isSoldOut, mintStartDate, isMinting, onMintNFT, nftsData } = useCandyMachine();
