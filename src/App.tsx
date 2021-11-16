@@ -1,47 +1,29 @@
 import "./App.css";
 import { useMemo } from "react";
-
-import Home from "./Home";
-
-import * as anchor from "@project-serum/anchor";
-import { clusterApiUrl } from "@solana/web3.js";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
-import {
-  getPhantomWallet,
-  getSlopeWallet,
-  getSolflareWallet,
-  getSolletWallet,
-  getSolletExtensionWallet,
-} from "@solana/wallet-adapter-wallets";
-
 import {
   ConnectionProvider,
   WalletProvider,
 } from "@solana/wallet-adapter-react";
+import "@solana/wallet-adapter-react-ui/styles.css";
+import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
+import { WalletBalanceProvider } from './hooks/use-wallet-balance';
 
-import { WalletDialogProvider } from "@solana/wallet-adapter-material-ui";
+import Home from "./Home";
+
 import { createTheme, ThemeProvider } from "@material-ui/core";
 
-const treasury = new anchor.web3.PublicKey(
-  process.env.REACT_APP_TREASURY_ADDRESS!
-);
-
-const config = new anchor.web3.PublicKey(
-  process.env.REACT_APP_CANDY_MACHINE_CONFIG!
-);
-
-const candyMachineId = new anchor.web3.PublicKey(
-  process.env.REACT_APP_CANDY_MACHINE_ID!
-);
-
-const network = process.env.REACT_APP_SOLANA_NETWORK as WalletAdapterNetwork;
-
-const rpcHost = process.env.REACT_APP_SOLANA_RPC_HOST!;
-const connection = new anchor.web3.Connection(rpcHost);
-
-const startDateSeed = parseInt(process.env.REACT_APP_CANDY_START_DATE!, 10);
-
-const txTimeout = 30000; // milliseconds (confirm this works for your project)
+let WALLETS: any = {
+  getPhantomWallet: () => ({ name: 'Phantom' }),
+  getSolflareWallet: () => ({ name: 'Solflare' }),
+  getSolletWallet: () => ({ name: 'Sollet' }),
+  getLedgerWallet: () => ({ name: 'Ledger' }),
+  getSlopeWallet: () => ({ name: 'Slope' }),
+  getSolletExtensionWallet: () => ({ name: 'SolletExtension' })
+};
+if (typeof window !== "undefined") {
+  WALLETS = require("@solana/wallet-adapter-wallets");
+}
 
 const theme = createTheme({
     palette: {
@@ -68,17 +50,20 @@ const theme = createTheme({
     },
 });
 
+const network = process.env.REACT_APP_SOLANA_NETWORK as WalletAdapterNetwork;
+
 const App = () => {
-	
-  const endpoint = useMemo(() => clusterApiUrl(network), []);
+
+  const endpoint = useMemo(() => 'https://solana-api.projectserum.com', []);
 
   const wallets = useMemo(
     () => [
-        getPhantomWallet(),
-        getSlopeWallet(),
-        getSolflareWallet(),
-        getSolletWallet({ network }),
-        getSolletExtensionWallet({ network })
+      WALLETS.getPhantomWallet(),
+      WALLETS.getSolflareWallet(),
+      WALLETS.getSolletWallet({ network }),
+      WALLETS.getLedgerWallet(),
+      WALLETS.getSlopeWallet(),
+      WALLETS.getSolletExtensionWallet({ network }),
     ],
     []
   );
@@ -86,17 +71,12 @@ const App = () => {
   return (
       <ThemeProvider theme={theme}>
         <ConnectionProvider endpoint={endpoint}>
-          <WalletProvider wallets={wallets} autoConnect={true}>
-            <WalletDialogProvider>
-              <Home
-                candyMachineId={candyMachineId}
-                config={config}
-                connection={connection}
-                startDate={startDateSeed}
-                treasury={treasury}
-                txTimeout={txTimeout}
-              />
-            </WalletDialogProvider>
+          <WalletProvider wallets={wallets} autoConnect>
+            <WalletModalProvider>
+              <WalletBalanceProvider>
+                <Home />
+              </WalletBalanceProvider>
+            </WalletModalProvider>
           </WalletProvider>
         </ConnectionProvider>
       </ThemeProvider>
