@@ -21,8 +21,12 @@ const Home = () => {
       <Toaster />
 
       <div className="w-full flex flex-col justify-center items-center">
-        <p className="text-center text-white">Balance : {balance.toFixed(2)} SOL</p>
-        <p className="text-center text-white">Address : {shortenAddress(wallet.publicKey?.toBase58() || '')}</p>
+        {wallet.connected &&
+          <>
+            <p className="text-center text-white">Balance : {balance.toFixed(2)} SOL</p>
+            <p className="text-center text-white">Address : {shortenAddress(wallet.publicKey?.toBase58() || '')}</p>
+          </>
+        }
         <p className="text-center text-white">Minted / Total : {nftsData.itemsRedeemed} / {nftsData.itemsAvailable}</p>
         {wallet.connected ? 
             (
