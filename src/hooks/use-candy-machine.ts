@@ -7,7 +7,6 @@ import useWalletBalance from "./use-wallet-balance";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { sleep } from "../utils/utility";
 import usePresale from "./use-pre-sale";
-import { MAX_HOLD_COUNT } from "../utils/whitelist";
 
 const MINT_PRICE_SOL = Number(process.env.REACT_APP_MINT_PRICE_SOL);
 
@@ -31,7 +30,7 @@ const txTimeout = 30000;
 export default function useCandyMachine() {
 
   const [, setBalance] = useWalletBalance();
-  const { isLoading, isMintPossible } = usePresale();
+  const { isLoading, checkMintPossible } = usePresale();
   const [candyMachine, setCandyMachine] = useState<CandyMachine>();
   const wallet = useWallet();
   const [nftsData, setNftsData] = useState<any>({} = {
@@ -98,9 +97,9 @@ export default function useCandyMachine() {
     try {
       setIsMinting(true);
 
-      if (!isMintPossible) {
+      const possible = await checkMintPossible();
+      if (!possible) {
         setIsMinting(false);
-        toast.error(`Mint failed! You are not in whitelist or can't have over ${MAX_HOLD_COUNT}`);
         return;
       }
 
@@ -169,9 +168,9 @@ export default function useCandyMachine() {
     try {
       setIsMinting(true);
 
-      if (!isMintPossible) {
+      const possible = await checkMintPossible();
+      if (!possible) {
         setIsMinting(false);
-        toast.error(`Mint failed! You are not in whitelist or can't have over ${MAX_HOLD_COUNT}`);
         return;
       }
 
