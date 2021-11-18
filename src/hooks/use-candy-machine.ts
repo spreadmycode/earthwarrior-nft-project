@@ -30,7 +30,7 @@ const txTimeout = 30000;
 export default function useCandyMachine() {
 
   const [, setBalance] = useWalletBalance();
-  const { isLoading, checkMintPossible } = usePresale();
+  const { isLoading, mintQuantity, checkMintPossible } = usePresale();
   const [candyMachine, setCandyMachine] = useState<CandyMachine>();
   const wallet = useWallet();
   const [nftsData, setNftsData] = useState<any>({} = {
@@ -97,7 +97,7 @@ export default function useCandyMachine() {
     try {
       setIsMinting(true);
 
-      const possible = await checkMintPossible();
+      const possible = await checkMintPossible(1);
       if (!possible) {
         setIsMinting(false);
         return;
@@ -168,7 +168,7 @@ export default function useCandyMachine() {
     try {
       setIsMinting(true);
 
-      const possible = await checkMintPossible();
+      const possible = await checkMintPossible(quantity);
       if (!possible) {
         setIsMinting(false);
         return;
@@ -187,14 +187,14 @@ export default function useCandyMachine() {
         );
       if (wallet.connected && candyMachine?.program && wallet.publicKey) {
         const oldBalance = await connection.getBalance(wallet?.publicKey) / LAMPORTS_PER_SOL;
-        const futureBalance = oldBalance - (MINT_PRICE_SOL * quantity)
+        const futureBalance = oldBalance - (MINT_PRICE_SOL * mintQuantity)
 
         const signedTransactions: any = await mintMultipleToken(
           candyMachine,
           config,
           wallet.publicKey,
           treasury,
-          quantity
+          mintQuantity
         );
 
         const promiseArray = []

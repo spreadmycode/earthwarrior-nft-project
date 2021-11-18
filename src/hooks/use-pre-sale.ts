@@ -34,9 +34,9 @@ export interface Presale {
 const usePresale = () => {
   const [presaleContract, setPresaleContractor] = useState<PresaleContract>();
   const wallet = useAnchorWallet();
-  const [nftLoading, nfts]: any = useWalletNfts();
+  const [isLoading, nfts]: any = useWalletNfts();
   const [currentHoldedCount, setCurrentHoldedCount] = useState(0);
-  const [presaleLoading, setPresaleLoading] = useState(false);
+  const [mintQuantity, setMintQuantity] = useState(1);
 
   const loadPresaleContract = async () => {
     const provider = new anchor.Provider(connection, wallet as anchor.Wallet, {
@@ -75,22 +75,26 @@ const usePresale = () => {
     })();
   }, [wallet]);
 
-  const checkMintPossible = async () => {
+  const checkMintPossible = async (quantity: number) => {
     if (wallet && wallet.publicKey) {
 
       let holdedNFTCount = nfts.length;
       setCurrentHoldedCount(holdedNFTCount);
       if (holdedNFTCount >= maxHoldCount) {                               // Check max hold count
-        toast.success(`You can't mint more than ${maxHoldCount}`);  
+        toast.error(`You can't mint more than ${maxHoldCount}`);  
         return false;
+      }
+
+      let possibleNFTCount = maxHoldCount - nfts.length;
+      setMintQuantity(quantity);
+      if (quantity > possibleNFTCount) {
+        setMintQuantity(possibleNFTCount);
       }
 
       if (wallet.publicKey.toBase58() == treasuryPubkey) {                // Owner of store can mint at anytime
         toast.success("You are store owner.");
         return true;
       }
-
-      setPresaleLoading(true);
       
       await presaleContract?.program.rpc.checkMintPossible(
         wallet.publicKey?.toBase58(),
@@ -103,8 +107,6 @@ const usePresale = () => {
       );
       const data: any = await presaleContract?.program.account.data.fetch(presaleContract.account);
       const checkStatus = data.checkStatus;
-
-      setPresaleLoading(false);
 
       switch (checkStatus) {
         case MINTER_STATUS.Available:
@@ -125,7 +127,7 @@ const usePresale = () => {
     return false;
   };
 
-  return { isLoading: presaleLoading || nftLoading, checkMintPossible };
+  return { isLoading, mintQuantity, checkMintPossible };
 }
 
 export default usePresale;

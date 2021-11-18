@@ -17,62 +17,70 @@ const Home = () => {
   const { isLoading, isSoldOut, mintStartDate, isMinting, onMintNFT, nftsData } = useCandyMachine();
 
   return (
-    <main className="p-5">
+    <main>
       <Toaster />
 
-      <div className="w-full flex flex-col justify-center items-center">
-        {wallet.connected &&
-          <>
-            <p className="text-center text-white">Balance : {balance.toFixed(2)} SOL</p>
-            <p className="text-center text-white">Address : {shortenAddress(wallet.publicKey?.toBase58() || '')}</p>
-          </>
-        }
-        <p className="text-center text-white">Minted / Total : {nftsData.itemsRedeemed} / {nftsData.itemsAvailable}</p>
-        {wallet.connected ? 
-            (
-              <button
-                disabled={isSoldOut || isMinting || !isActive || isLoading}
-                className="mt-5 w-full py-2 px-2 text-black text-xs text-center font-bold !bg-gradient-to-br from-yellow-600 via-yellow-400 to-yellow-600 border-2 border-yellow-400 rounded flex justify-center items-center transition-all ease-in-out duration-500 transform lg:hover:-translate-y-1" 
-                style={{color: 'black', fontWeight: 'bold', border: 'rgba(251, 191, 36, 200) 2px solid', fontSize: '16px', width: "100%", marginTop: "20px"}}
-                onClick={()=> onMintNFT(quantity)}
-              >
-                {isSoldOut ? 
-                  (
-                    "SOLD OUT"
-                  ) 
-                : 
-                  isActive ? 
-                    (
-                      (isMinting || isLoading) ? 
-                        (
-                          <CircularProgress style={{width: '15px', height: '15px'}} />
-                        ) 
-                      : 
-                        (
-                          "MINT"
-                        )
-                    ) 
-                  : 
-                    (
-                      <Countdown
-                        date={mintStartDate}
-                        onMount={({ completed }) => completed && setIsActive(true)}
-                        onComplete={() => setIsActive(true)}
-                        renderer={renderCounter}
-                      />
-                    )
-                }
-              </button>
-            )
-          : 
-            (
-              <WalletMultiButton 
-                className="mt-5 py-1 px-2 text-black text-xs text-center font-bold !bg-gradient-to-br from-yellow-600 via-yellow-400 to-yellow-600 border-2 border-yellow-400 rounded flex justify-center items-center transition-all ease-in-out duration-500 transform lg:hover:-translate-y-1" 
-                style={{color: 'black', fontWeight: 'bold', border: 'rgba(251, 191, 36, 200) 2px solid', fontSize: '16px', width: "100%", marginTop: "20px"}}
-              >
-                Connect Wallet
-              </WalletMultiButton>
-            ) 
+      <div className="flex flex-col justify-center items-center">
+        <h2 className="text-sm md:text-2xl text-white tracking-widest mb-6">PLEASE CONNECT YOUR WALLET FIRST</h2>
+        <WalletMultiButton 
+          className="text-black max-w-sm w-full py-2 px-4 mb-6 text-black text-center font-bold uppercase tracking-widest !bg-gradient-to-br from-yellow-600 via-yellow-400 to-yellow-600 border-2 border-yellow-400 rounded flex justify-center items-center transition-all ease-in-out duration-500 transform lg:hover:-translate-y-1 button-connect"
+        >
+          {wallet.connected ? shortenAddress(wallet.publicKey?.toBase58() || '') : "Connect Wallet"}
+        </WalletMultiButton>
+        {
+          isSoldOut ?
+            <p className="text-center">SOLD OUT</p>
+            :
+              isActive ?
+                (isMinting || isLoading) ?
+                  wallet.connected &&
+                  <CircularProgress style={{width: '30px', height: '30px'}} />
+                :
+                  wallet.connected && 
+                    <div id="mint-area" className="flex flex-wrap gap-6 justify-center items-center text-sm uppercase tracking-wider font-bold">
+                      <button 
+                        onClick={() => onMintNFT(1)}
+                        disabled={isSoldOut || isMinting || !isActive || isLoading} 
+                        className="text-black font-bold py-2 px-4 !bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 border-2 border-white rounded transition-all ease-in-out duration-100 transform lg:hover:-translate-y-1 hover:text-yellow-500"
+                      >
+                        MINT 1 HIGH ROLLER
+                      </button>
+                      <button 
+                        onClick={() => onMintNFT(2)}
+                        disabled={isSoldOut || isMinting || !isActive || isLoading} 
+                        className="text-black font-bold py-2 px-4 !bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 border-2 border-white rounded transition-all ease-in-out duration-100 transform lg:hover:-translate-y-1 hover:text-yellow-500"
+                      >
+                        MINT 2 HIGH ROLLER
+                      </button>
+                      <button 
+                        onClick={() => onMintNFT(3)}
+                        disabled={isSoldOut || isMinting || !isActive || isLoading} 
+                        className="text-black font-bold py-2 px-4 !bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 border-2 border-white rounded transition-all ease-in-out duration-100 transform lg:hover:-translate-y-1 hover:text-yellow-500"
+                      >
+                        MINT 3 HIGH ROLLER
+                      </button>
+                      <button 
+                        onClick={() => onMintNFT(6)}
+                        disabled={isSoldOut || isMinting || !isActive || isLoading} 
+                        className="text-black font-bold py-2 px-4 !bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 border-2 border-white rounded transition-all ease-in-out duration-100 transform lg:hover:-translate-y-1 hover:text-yellow-500"
+                      >
+                        MINT 6 HIGH ROLLER
+                      </button>
+                      <button 
+                        onClick={() => onMintNFT(7)}
+                        disabled={isSoldOut || isMinting || !isActive || isLoading} 
+                        className="text-black font-bold py-2 px-4 !bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 border-2 border-white rounded transition-all ease-in-out duration-100 transform lg:hover:-translate-y-1 hover:text-yellow-500"
+                      >
+                        MINT 7 HIGH ROLLER
+                      </button>
+                    </div>
+              :
+                <Countdown
+                  date={mintStartDate}
+                  onMount={({ completed }) => completed && setIsActive(true)}
+                  onComplete={() => setIsActive(true)}
+                  renderer={renderCounter}
+                /> 
         }
       </div>
     </main>

@@ -19,6 +19,15 @@ html {
   font-style: normal;
 }
 
+.swiper {
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
+.button-connect {
+  color: black !important;
+  font-weight: bold !important;
+}
+
 .swiper-pagination-bullet {
   background-color: white!important;
   opacity: 0.5;
@@ -40,19 +49,18 @@ html {
 }
 
 #story {
-  background-image: url('../assets/images/min/Background-layer1-min.png');
+  background: linear-gradient(to bottom, #00000000 25%, #1a100f), url('../assets/images/min/Background-layer1-min.png');
   background-size: cover;
   background-position: top center;
 }
 
 #collection {
-  background: url('../assets/images/min/2-min.jpeg') no-repeat center center / cover , 
-  linear-gradient(to bottom, hsl(7deg 27% 8%) 10%, #000000 100%);
-  background-blend-mode: overlay;
+  background: linear-gradient(to bottom, #1a100f 10%, #0e0e0f 100%);
 }
 
 #roadmap {
-  background-image: url('../assets/images/min/roadmap-bg-min.png');
+  background: linear-gradient(to bottom, #000000ab 2%, #00000000 98%), url('../assets/images/min/roadmap-bg-min.png');
+  background-blend-mode: overlay;
 }
 
 #team {
